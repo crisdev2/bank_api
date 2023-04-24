@@ -2,9 +2,11 @@
 
 namespace App\Controller;
 
-use App\Entity\Customer;
+use App\Entity\Accounts;
+use App\Repository\AccountsRepository;
 use App\Repository\CustomerRepository;
 use App\Service\RequestService;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -13,11 +15,11 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route('/api', name: 'api_')]
-class CustomerController extends AbstractController
+class AccountsController extends AbstractController
 {
-    #[Route('/customer', name: 'customer_index', methods: ['GET'])]
+    #[Route('/accounts', name: 'accounts_index', methods: ['GET'])]
     public function index(
-        CustomerRepository $repository,
+        AccountsRepository $repository,
     ): JsonResponse
     {
         $records = $repository->findAll();
@@ -28,21 +30,21 @@ class CustomerController extends AbstractController
         ]);
     }
 
-    #[Route('/customer', name: 'customer_create', methods: ['POST'])]
+    #[Route('/accounts', name: 'accounts_create', methods: ['POST'])]
     public function create(
         Request $request,
         EntityManagerInterface $em,
+        CustomerRepository $customerRepository,
     ): JsonResponse
     {
         $data = json_decode($request->getContent());
-        $record = new Customer();
-        $record->setName($data->name);
-        $record->setIdnumber($data->idnumber);
-        $record->setPhone($data->phone);
-        $record->setAge($data->age);
-        $record->setAddress($data->address);
+        $record = new Accounts();
+        $record->setIdCustomer($customerRepository->find($data->idCustomer));
+        $record->setNumber($data->number);
+        $record->setBalance($data->balance);
+        $record->setActivation(new DateTime($data->activation));
         $record->setCity($data->city);
-        $record->setOccupation($data->occupation);
+        $record->setCountry($data->country);
         $record->setActive($data->active);
 
         $em->persist($record);
@@ -54,24 +56,24 @@ class CustomerController extends AbstractController
         ]);
     }
 
-    #[Route('/customer/{id}', name: 'customer_edit', methods: ['PUT'])]
+    #[Route('/accounts/{id}', name: 'accounts_edit', methods: ['PUT'])]
     public function edit(
         Request $request,
         EntityManagerInterface $em,
-        CustomerRepository $repository,
+        AccountsRepository $repository,
+        CustomerRepository $customerRepository,
         $id
     ): JsonResponse
     {
         $data = json_decode($request->getContent());
         
         $record = $repository->findOneBy(['id' => $id]);
-        $record->setName($data->name);
-        $record->setIdnumber($data->idnumber);
-        $record->setPhone($data->phone);
-        $record->setAge($data->age);
-        $record->setAddress($data->address);
+        $record->setIdCustomer($customerRepository->find($data->idCustomer));
+        $record->setNumber($data->number);
+        $record->setBalance($data->balance);
+        $record->setActivation(new DateTime($data->activation));
         $record->setCity($data->city);
-        $record->setOccupation($data->occupation);
+        $record->setCountry($data->country);
         $record->setActive($data->active);
 
         $em->persist($record);
@@ -83,10 +85,10 @@ class CustomerController extends AbstractController
         ]);
     }
 
-    #[Route('/customer/{id}', name: 'customer_delete', methods: ['DELETE'])]
+    #[Route('/accounts/{id}', name: 'accounts_delete', methods: ['DELETE'])]
     public function delete(
         EntityManagerInterface $em,
-        CustomerRepository $repository,
+        AccountsRepository $repository,
         $id
     ): JsonResponse
     {

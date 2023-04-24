@@ -20,8 +20,8 @@ class Accounts
     #[ORM\JoinColumn(nullable: false)]
     private ?Customer $idCustomer = null;
 
-    #[ORM\Column]
-    private ?int $number = null;
+    #[ORM\Column(length: 255)]
+    private ?string $number = null;
 
     #[ORM\Column]
     private ?float $balance = null;
@@ -49,18 +49,6 @@ class Accounts
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getNumber(): ?int
-    {
-        return $this->number;
-    }
-
-    public function setNumber(int $number): self
-    {
-        $this->number = $number;
-
-        return $this;
     }
 
     public function getBalance(): ?float
@@ -161,6 +149,18 @@ class Accounts
     public function setIdCustomer(?Customer $idCustomer): self
     {
         $this->idCustomer = $idCustomer;
+
+        return $this;
+    }
+
+    public function getNumber(): ?string
+    {
+        return $this->number;
+    }
+
+    public function setNumber(string $number): self
+    {
+        $this->number = $number;
 
         return $this;
     }
