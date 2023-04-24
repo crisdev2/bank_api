@@ -26,7 +26,10 @@ class Transactions
     private ?\DateTimeInterface $created = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $commercename = null;
+    private ?string $tradeName = null;
+
+    #[ORM\Column]
+    private ?float $value = null;
 
     #[ORM\Column]
     private ?float $currentBalance = null;
@@ -34,8 +37,9 @@ class Transactions
     #[ORM\Column]
     private ?float $finalBalance = null;
 
-    #[ORM\Column]
-    private ?int $status = null;
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Status $idStatus = null;
 
     public function getId(): ?int
     {
@@ -78,18 +82,6 @@ class Transactions
         return $this;
     }
 
-    public function getCommercename(): ?string
-    {
-        return $this->commercename;
-    }
-
-    public function setCommercename(string $commercename): self
-    {
-        $this->commercename = $commercename;
-
-        return $this;
-    }
-
     public function getCurrentBalance(): ?float
     {
         return $this->currentBalance;
@@ -114,14 +106,38 @@ class Transactions
         return $this;
     }
 
-    public function getStatus(): ?int
+    public function getTradeName(): ?string
     {
-        return $this->status;
+        return $this->tradeName;
     }
 
-    public function setStatus(int $status): self
+    public function setTradeName(string $tradeName): self
     {
-        $this->status = $status;
+        $this->tradeName = $tradeName;
+
+        return $this;
+    }
+
+    public function getValue(): ?float
+    {
+        return $this->value;
+    }
+
+    public function setValue(float $value): self
+    {
+        $this->value = $value;
+
+        return $this;
+    }
+
+    public function getIdStatus(): ?Status
+    {
+        return $this->idStatus;
+    }
+
+    public function setIdStatus(?Status $idStatus): self
+    {
+        $this->idStatus = $idStatus;
 
         return $this;
     }
